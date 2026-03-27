@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Ombrève</title>
+  <meta name="description" content="Contactez la Maison Ombrève pour toute demande : commande sur mesure, conseil style, questions sur vos achats." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── LAYOUT ───────────────────────────────────────── */
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 100px;
+      align-items: start;
+      padding: 80px 0 120px;
+    }
+
+    /* ── COLONNE INFOS ────────────────────────────────── */
+    .contact-info__intro {
+      font-family: var(--font-title);
+      font-style: italic;
+      font-size: 1.5rem;
+      color: var(--text-2);
+      line-height: 1.5;
+      margin-bottom: 48px;
+    }
+    .contact-info__intro em { color: var(--gold); font-style: normal; }
+
+    .info-block {
+      margin-bottom: 40px;
+    }
+    .info-block__label {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+      margin-bottom: 10px;
+    }
+    .info-block__value {
+      font-size: 1rem;
+      color: var(--text-2);
+      line-height: 1.85;
+    }
+    .info-block__value a {
+      color: var(--text);
+      transition: color 0.2s ease;
+    }
+    .info-block__value a:hover { color: var(--gold); }
+
+    .contact-divider {
+      width: 40px;
+      height: 1px;
+      background: var(--border-md);
+      margin: 40px 0;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 24px;
+    }
+    .social-link {
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      transition: color 0.2s ease;
+      position: relative;
+    }
+    .social-link::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.3s ease;
+    }
+    .social-link:hover { color: var(--gold); }
+    .social-link:hover::after { width: 100%; }
+
+    /* ── FORMULAIRE ───────────────────────────────────── */
+    .contact-form__title {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 40px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-group {
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 10px;
+      transition: color 0.2s ease;
+    }
+    .form-group:focus-within label { color: var(--gold); }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 300;
+      padding: 10px 0 14px;
+      outline: none;
+      transition: border-color 0.3s ease;
+      appearance: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-bottom-color: var(--gold);
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: var(--text-3);
+      font-weight: 300;
+    }
+    .form-group select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23544840' viewBox='0 0 24 24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0 center;
+    }
+    .form-group select option { background: #111; color: var(--text); }
+    .form-group textarea {
+      resize: none;
+      min-height: 120px;
+      line-height: 1.8;
+    }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+
+    /* Underline animation */
+    .form-group::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.4s var(--ease-out);
+    }
+    .form-group:focus-within::after { width: 100%; }
+
+    .form-submit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 40px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .form-note {
+      font-size: 0.75rem;
+      color: var(--text-3);
+      letter-spacing: 0.04em;
+    }
+    .btn--submit {
+      background: transparent;
+      border: 1px solid var(--border-md);
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 16px 44px;
+      transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn--submit::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gold);
+      transform: translateX(-101%);
+      transition: transform 0.4s var(--ease-out);
+    }
+    .btn--submit:hover { color: #080808; border-color: var(--gold); }
+    .btn--submit:hover::before { transform: translateX(0); }
+    .btn--submit span { position: relative; z-index: 1; }
+
+    /* Succès */
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 60px 0;
+    }
+    .form-success__icon {
+      font-family: var(--font-title);
+      font-style: italic;
+      font-size: 4rem;
+      color: var(--gold);
+      margin-bottom: 24px;
+      line-height: 1;
+    }
+    .form-success h3 {
+      font-family: var(--font-title);
+      font-size: 1.8rem;
+      font-style: italic;
+      margin-bottom: 12px;
+    }
+    .form-success p { font-size: 0.88rem; color: var(--text-2); line-height: 1.8; }
+
+    /* ── IMAGE BANDE ──────────────────────────────────── */
+    .contact-band {
+      position: relative;
+      height: 50vh;
+      min-height: 380px;
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+    }
+    .contact-band__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+      filter: brightness(0.3);
+    }
+    .contact-band__text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .contact-band__text p {
+      font-family: var(--font-title);
+      font-style: italic;
+      font-size: clamp(1.4rem, 3vw, 2.4rem);
+      color: var(--text-2);
+      max-width: 600px;
+      line-height: 1.4;
+    }
+    .contact-band__text p em { color: var(--text); font-style: normal; }
+
+    @media (max-width: 900px) {
+      .contact-layout { grid-template-columns: 1fr; gap: 60px; padding: 60px 0 80px; }
+      .form-row { grid-template-columns: 1fr; gap: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__logo">Ombr<em>è</em>ve</a>
+        <div class="nav__links" id="navLinks">
+          <a href="index.html">Accueil</a>
+          <a href="boutique.html">Boutique</a>
+          <a href="contact.html" class="active">Contact</a>
+          <a href="panier.html" class="nav__cart">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            <span class="cart-count">0</span>
+          </a>
+        </div>
+        <button class="nav__hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="nav__mobile" id="mobileMenu">
+        <a href="index.html">Accueil</a>
+        <a href="boutique.html">Boutique</a>
+        <a href="contact.html">Contact</a>
+        <a href="panier.html">Mon panier</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <div class="page-hero container fade-up">
+    <span class="tag">Maison Ombrève</span>
+    <h1>Nous écrire</h1>
+    <p>Pour une commande sur mesure, un conseil style ou toute autre demande — nous vous répondons sous 48h.</p>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="container">
+    <div class="contact-layout">
+
+      <!-- INFOS -->
+      <div class="slide-left">
+        <p class="contact-info__intro">
+          Chaque demande mérite une<br>
+          réponse <em>à la hauteur</em><br>
+          de son intention.
+        </p>
+
+        <div class="info-block">
+          <p class="info-block__label">Atelier & showroom</p>
+          <p class="info-block__value">
+            14, Rue des Minimes<br>
+            75003 Paris — France<br>
+            <span style="font-size:0.78rem;color:var(--text-3)">Sur rendez-vous uniquement</span>
+          </p>
+        </div>
+
+        <div class="info-block">
+          <p class="info-block__label">Nous joindre</p>
+          <p class="info-block__value">
+            <a href="tel:+33142786540">+33 (0)1 42 78 65 40</a><br>
+            <a href="mailto:maison@ombreve.fr">maison@ombreve.fr</a>
+          </p>
+        </div>
+
+        <div class="info-block">
+          <p class="info-block__label">Horaires</p>
+          <p class="info-block__value">
+            Lundi — Vendredi<br>
+            10h00 – 18h00<br>
+            <span style="font-size:0.78rem;color:var(--text-3)">Fermé les week-ends et jours fériés</span>
+          </p>
+        </div>
+
+        <div class="contact-divider"></div>
+
+        <div class="social-links">
+          <a href="#" class="social-link">Instagram</a>
+          <a href="#" class="social-link">Pinterest</a>
+          <a href="#" class="social-link">LinkedIn</a>
+        </div>
+      </div>
+
+      <!-- FORMULAIRE -->
+      <div class="slide-right">
+        <p class="contact-form__title">Formulaire de contact</p>
+
+        <form id="contactForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="prenom">Prénom</label>
+              <input type="text" id="prenom" name="prenom" placeholder="Votre prénom" required />
+            </div>
+            <div class="form-group">
+              <label for="nom">Nom</label>
+              <input type="text" id="nom" name="nom" placeholder="Votre nom" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">Adresse e-mail</label>
+            <input type="email" id="email" name="email" placeholder="prenom@exemple.fr" required />
+          </div>
+          <div class="form-group">
+            <label for="sujet">Objet de votre demande</label>
+            <select id="sujet" name="sujet" required>
+              <option value="" disabled selected>Sélectionnez</option>
+              <option value="commande">Commande & livraison</option>
+              <option value="mesure">Pièce sur mesure</option>
+              <option value="retour">Retour & échange</option>
+              <option value="presse">Presse & collaboration</option>
+              <option value="autre">Autre demande</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Votre message</label>
+            <textarea id="message" name="message" placeholder="Décrivez votre demande avec précision…" required></textarea>
+          </div>
+          <div class="form-submit-row">
+            <p class="form-note">Réponse garantie sous 48h ouvrées.</p>
+            <button type="submit" class="btn--submit"><span>Envoyer →</span></button>
+          </div>
+        </form>
+
+        <div class="form-success" id="formSuccess">
+          <div class="form-success__icon">✦</div>
+          <h3>Message reçu</h3>
+          <p>Merci de votre confiance. Un membre de notre équipe vous répondra dans les 48 heures ouvrées. En attendant, n'hésitez pas à parcourir notre collection.</p>
+          <a href="boutique.html" class="btn--text" style="display:inline-block;margin-top:24px">Retour à la boutique →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- IMAGE BANDE -->
+  <div class="contact-band fade-in">
+    <img class="contact-band__img"
+      src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1600&q=80"
+      alt="Ombrève — Maison de mode" />
+    <div class="contact-band__text">
+      <p>« La discrétion est la plus haute<br>forme de l'<em>élégance.</em> »</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <a href="index.html" class="footer__logo">Ombr<em>è</em>ve</a>
+          <p>Maison de mode parisienne fondée sur l'art du vêtement discret et d'exception. Séries limitées, matières nobles, silhouettes intemporelles.</p>
+        </div>
+        <div class="footer__col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="boutique.html">Boutique</a></li>
+            <li><a href="produit.html">Un produit</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Informations</h4>
+          <ul>
+            <li><a href="#">Livraison & retours</a></li>
+            <li><a href="#">Guide des tailles</a></li>
+            <li><a href="#">Entretien des pièces</a></li>
+            <li><a href="#">Mentions légales</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2025 Ombrève. Tous droits réservés.</span>
+        <span>Paris · Maison de mode artisanale</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

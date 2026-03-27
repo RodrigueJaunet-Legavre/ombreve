@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manteau Obsidienne — Ombrève</title>
+  <meta name="description" content="Manteau oversize en laine bouillie noire. Coupe architecturale, doublure en soie. Édition limitée Ombrève, 680 €." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── PRODUIT LAYOUT ───────────────────────────────── */
+    .product-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 80px;
+      align-items: start;
+      padding-top: 120px;
+      padding-bottom: 120px;
+    }
+
+    /* ── GALERIE ──────────────────────────────────────── */
+    .product-gallery {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+    .gallery-thumbs {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .gallery-thumb {
+      aspect-ratio: 1;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: border-color 0.25s ease;
+    }
+    .gallery-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      filter: brightness(0.75);
+      transition: filter 0.3s ease;
+    }
+    .gallery-thumb:hover img,
+    .gallery-thumb.active img { filter: brightness(1); }
+    .gallery-thumb.active { border-color: var(--gold); }
+
+    .gallery-main {
+      position: sticky;
+      top: 100px;
+      overflow: hidden;
+    }
+    .gallery-main__img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      transition: transform 0.8s var(--ease-out);
+    }
+    .gallery-main:hover .gallery-main__img { transform: scale(1.03); }
+
+    /* ── DÉTAILS PRODUIT ──────────────────────────────── */
+    .product-details {
+      padding-top: 20px;
+    }
+    .product-details .tag { margin-bottom: 12px; }
+
+    .product-name {
+      font-family: var(--font-title);
+      font-style: italic;
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      color: var(--text);
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+    .product-sub {
+      font-size: 0.88rem;
+      color: var(--text-2);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .product-price {
+      font-family: var(--font-title);
+      font-size: 2rem;
+      color: var(--gold);
+      margin-bottom: 32px;
+    }
+    .product-price span {
+      font-size: 0.78rem;
+      font-family: var(--font-body);
+      color: var(--text-3);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+
+    .product-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 28px 0;
+    }
+
+    /* Sélecteurs */
+    .selector-label {
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .selector-label a {
+      color: var(--gold-dark);
+      font-size: 0.64rem;
+      transition: color 0.2s ease;
+    }
+    .selector-label a:hover { color: var(--gold); }
+
+    .sizes {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .size-btn {
+      width: 46px;
+      height: 46px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+    }
+    .size-btn:hover { border-color: var(--border-md); color: var(--text); }
+    .size-btn.active {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(201,169,110,0.06);
+    }
+    .size-btn.unavailable {
+      opacity: 0.3;
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+
+    .colors {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+    .color-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+      position: relative;
+    }
+    .color-dot::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      transition: border-color 0.2s ease;
+    }
+    .color-dot.active::after { border-color: var(--gold); }
+    .color-dot:hover { transform: scale(1.15); }
+
+    /* CTA */
+    .product-cta {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .btn--add {
+      width: 100%;
+      padding: 18px;
+      background: var(--gold);
+      color: #080808;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border: none;
+      transition: background 0.3s ease;
+    }
+    .btn--add:hover { background: var(--gold-light); }
+    .btn--wish {
+      width: 100%;
+      padding: 16px;
+      background: transparent;
+      border: 1px solid var(--border-md);
+      color: var(--text-2);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: border-color 0.3s ease, color 0.3s ease;
+    }
+    .btn--wish:hover { border-color: var(--gold-dark); color: var(--text); }
+
+    .product-reassurance {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .reassurance-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.9rem;
+      color: var(--text-3);
+    }
+    .reassurance-item svg { color: var(--gold-dark); flex-shrink: 0; }
+
+    /* Description */
+    .product-description {
+      margin-top: 40px;
+      border-top: 1px solid var(--border);
+      padding-top: 32px;
+    }
+    .accordion-item { border-bottom: 1px solid var(--border); }
+    .accordion-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    .accordion-trigger:hover { color: var(--gold); }
+    .accordion-trigger svg { transition: transform 0.3s ease; flex-shrink: 0; }
+    .accordion-trigger.open svg { transform: rotate(45deg); }
+    .accordion-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s var(--ease-out);
+    }
+    .accordion-body.open { max-height: 400px; }
+    .accordion-body p {
+      font-size: 0.95rem;
+      color: var(--text-2);
+      line-height: 1.9;
+      padding-bottom: 20px;
+    }
+    .accordion-body ul {
+      list-style: none;
+      padding-bottom: 20px;
+    }
+    .accordion-body ul li {
+      font-size: 0.95rem;
+      color: var(--text-2);
+      padding: 4px 0;
+      padding-left: 14px;
+      position: relative;
+    }
+    .accordion-body ul li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--gold-dark);
+    }
+
+    /* ── VOUS AIMEREZ AUSSI ───────────────────────────── */
+    .also-like { background: var(--bg-2); border-top: 1px solid var(--border); }
+    .also-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 48px;
+    }
+    .also-card { overflow: hidden; }
+    .also-card__img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      filter: brightness(0.85);
+      transition: transform 0.8s var(--ease-out), filter 0.5s ease;
+    }
+    .also-card:hover .also-card__img { transform: scale(1.06); filter: brightness(0.7); }
+    .also-card__body {
+      padding: 16px 0 8px;
+      border-top: 1px solid var(--border);
+    }
+    .also-card__name {
+      font-family: var(--font-title);
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .also-card__price { font-size: 0.85rem; color: var(--gold); }
+
+    @media (max-width: 900px) {
+      .product-layout { grid-template-columns: 1fr; gap: 48px; padding-top: 100px; }
+      .product-gallery { grid-template-columns: 60px 1fr; gap: 8px; }
+      .gallery-main { position: static; }
+      .also-grid { grid-template-columns: 1fr 1fr; }
+      .also-grid .also-card:last-child { display: none; }
+    }
+    @media (max-width: 560px) {
+      .product-gallery { grid-template-columns: 1fr; }
+      .gallery-thumbs { flex-direction: row; }
+      .gallery-thumb { width: 60px; flex-shrink: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__logo">Ombr<em>è</em>ve</a>
+        <div class="nav__links" id="navLinks">
+          <a href="index.html">Accueil</a>
+          <a href="boutique.html" class="active">Boutique</a>
+          <a href="contact.html">Contact</a>
+          <a href="panier.html" class="nav__cart">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            <span class="cart-count">0</span>
+          </a>
+        </div>
+        <button class="nav__hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="nav__mobile" id="mobileMenu">
+        <a href="index.html">Accueil</a>
+        <a href="boutique.html">Boutique</a>
+        <a href="contact.html">Contact</a>
+        <a href="panier.html">Mon panier</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- FIL D'ARIANE -->
+  <div style="padding: 100px 0 0; border-bottom: 1px solid var(--border);">
+    <div class="container" style="padding-bottom: 16px;">
+      <p style="font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-3)">
+        <a href="boutique.html" style="transition:color 0.2s ease;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text-3)'">Boutique</a>
+        &nbsp;/&nbsp;
+        <a href="boutique.html" style="transition:color 0.2s ease;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text-3)'">Manteaux</a>
+        &nbsp;/&nbsp;
+        <span style="color:var(--text-2)">Manteau Obsidienne</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- PRODUIT -->
+  <div class="container">
+    <div class="product-layout">
+
+      <!-- GALERIE -->
+      <div class="product-gallery slide-left">
+        <div class="gallery-thumbs">
+          <div class="gallery-thumb active">
+            <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=300&q=80" alt="Vue 1" />
+          </div>
+          <div class="gallery-thumb">
+            <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=300&q=80" alt="Vue 2" />
+          </div>
+          <div class="gallery-thumb">
+            <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=300&q=80" alt="Vue 3" />
+          </div>
+        </div>
+        <div class="gallery-main">
+          <img class="gallery-main__img"
+            src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&q=85"
+            alt="Manteau Obsidienne — Ombrève"
+            id="mainImg" />
+        </div>
+      </div>
+
+      <!-- DÉTAILS -->
+      <div class="product-details slide-right">
+        <span class="tag">Manteaux · Nouveauté 2025</span>
+        <h1 class="product-name">Manteau<br>Obsidienne</h1>
+        <p class="product-sub">Réf. OBR-MNT-001 · Édition limitée — 12 exemplaires</p>
+        <p class="product-price">680 € <span>TTC · Hors livraison</span></p>
+
+        <div class="product-divider"></div>
+
+        <!-- Taille -->
+        <p class="selector-label">
+          Taille
+          <a href="#">Guide des tailles</a>
+        </p>
+        <div class="sizes">
+          <button class="size-btn">XS</button>
+          <button class="size-btn active">S</button>
+          <button class="size-btn">M</button>
+          <button class="size-btn">L</button>
+          <button class="size-btn unavailable">XL</button>
+        </div>
+
+        <!-- Couleur -->
+        <p class="selector-label">Couleur — <span style="color:var(--text-2);font-size:0.72rem;letter-spacing:0.06em;text-transform:none;font-weight:300">Noir Obsidienne</span></p>
+        <div class="colors">
+          <div class="color-dot active" style="background:#141414" title="Noir Obsidienne"></div>
+          <div class="color-dot" style="background:#3A3530" title="Brun Tourbe"></div>
+          <div class="color-dot" style="background:#2A2E3A" title="Bleu Minuit"></div>
+        </div>
+
+        <!-- CTA -->
+        <div class="product-cta">
+          <button class="btn--add add-to-cart" id="addToCart">Ajouter au panier</button>
+          <button class="btn--wish">♡ &nbsp; Ajouter à ma liste</button>
+        </div>
+
+        <!-- Réassurance -->
+        <div class="product-reassurance">
+          <div class="reassurance-item">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+            Livraison offerte en France à partir de 200 €
+          </div>
+          <div class="reassurance-item">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Retours gratuits sous 14 jours
+          </div>
+          <div class="reassurance-item">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            Paiement 100 % sécurisé
+          </div>
+        </div>
+
+        <!-- Description accordion -->
+        <div class="product-description">
+          <div class="accordion-item">
+            <button class="accordion-trigger open">
+              Description
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </button>
+            <div class="accordion-body open">
+              <p>Le Manteau Obsidienne est une pièce architecturale taillée dans une laine bouillie d'exception, souple et dense comme un murmure. Sa coupe oversize enveloppe sans contraindre. Sa doublure en soie de Lyon glisse sur la peau comme une confidence. Chaque couture est réalisée à la main dans notre atelier du Marais.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger">
+              Composition & entretien
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </button>
+            <div class="accordion-body">
+              <ul>
+                <li>90 % laine mérinos bouillie · 10 % cachemire</li>
+                <li>Doublure : 100 % soie de Lyon</li>
+                <li>Boutons : corne naturelle</li>
+                <li>Nettoyage à sec uniquement</li>
+                <li>Conserver à plat, loin de la lumière directe</li>
+              </ul>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger">
+              Livraison & retours
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </button>
+            <div class="accordion-body">
+              <ul>
+                <li>Expédition sous 2 à 3 jours ouvrés</li>
+                <li>Livraison offerte en France métropolitaine</li>
+                <li>Retours gratuits dans les 14 jours</li>
+                <li>Emballage cadeau disponible sur demande</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- VOUS AIMEREZ AUSSI -->
+  <section class="section also-like">
+    <div class="container">
+      <div class="fade-up">
+        <span class="tag">Dans le même esprit</span>
+        <h2>Vous aimerez<br><em style="font-style:italic;color:var(--gold-dark)">aussi</em></h2>
+      </div>
+      <div class="also-grid">
+        <div class="also-card fade-up fade-up--delay-1">
+          <img class="also-card__img"
+            src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600&q=80"
+            alt="Robe Nocturne" />
+          <div class="also-card__body">
+            <p class="also-card__name">Robe Nocturne</p>
+            <p class="also-card__price">480 €</p>
+          </div>
+        </div>
+        <div class="also-card fade-up fade-up--delay-2">
+          <img class="also-card__img"
+            src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=600&q=80"
+            alt="Veste Pénombre" />
+          <div class="also-card__body">
+            <p class="also-card__name">Veste Pénombre</p>
+            <p class="also-card__price">420 €</p>
+          </div>
+        </div>
+        <div class="also-card fade-up fade-up--delay-3">
+          <img class="also-card__img"
+            src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80"
+            alt="Sac Ombres" />
+          <div class="also-card__body">
+            <p class="also-card__name">Sac Ombres</p>
+            <p class="also-card__price">350 €</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <a href="index.html" class="footer__logo">Ombr<em>è</em>ve</a>
+          <p>Maison de mode parisienne fondée sur l'art du vêtement discret et d'exception. Séries limitées, matières nobles, silhouettes intemporelles.</p>
+        </div>
+        <div class="footer__col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="boutique.html">Boutique</a></li>
+            <li><a href="produit.html">Un produit</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Informations</h4>
+          <ul>
+            <li><a href="#">Livraison & retours</a></li>
+            <li><a href="#">Guide des tailles</a></li>
+            <li><a href="#">Entretien des pièces</a></li>
+            <li><a href="#">Mentions légales</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2025 Ombrève. Tous droits réservés.</span>
+        <span>Paris · Maison de mode artisanale</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Galerie thumbs
+    const thumbs = document.querySelectorAll('.gallery-thumb');
+    const mainImg = document.getElementById('mainImg');
+    const srcs = [
+      'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&q=85',
+      'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=900&q=85',
+      'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=900&q=85',
+    ];
+    thumbs.forEach((thumb, i) => {
+      thumb.addEventListener('click', () => {
+        thumbs.forEach(t => t.classList.remove('active'));
+        thumb.classList.add('active');
+        mainImg.src = srcs[i];
+      });
+    });
+
+    // Accordion
+    document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        const body = trigger.nextElementSibling;
+        const isOpen = trigger.classList.contains('open');
+        trigger.classList.toggle('open', !isOpen);
+        body.classList.toggle('open', !isOpen);
+      });
+    });
+  </script>
+</body>
+</html>

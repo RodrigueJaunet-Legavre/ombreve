@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mon Panier — Ombrève</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── LAYOUT PANIER ─────────────────────────────── */
+    .panier-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 60px;
+      align-items: start;
+      padding: 60px 0 120px;
+    }
+
+    /* ── ITEMS ─────────────────────────────────────── */
+    .cart-item {
+      display: grid;
+      grid-template-columns: 100px 1fr auto auto auto;
+      gap: 28px;
+      align-items: center;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .cart-item:first-child { border-top: 1px solid var(--border); }
+
+    .cart-item__img {
+      width: 100px;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .cart-item__img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      filter: brightness(0.9);
+    }
+
+    .cart-item__info { min-width: 0; }
+    .cart-item__cat {
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 4px;
+    }
+    .cart-item__name {
+      font-family: var(--font-title);
+      font-style: italic;
+      font-size: 1.3rem;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .cart-item__price-unit {
+      font-size: 0.82rem;
+      color: var(--text-3);
+    }
+
+    .cart-item__qty {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1px solid var(--border);
+    }
+    .qty-btn {
+      width: 34px;
+      height: 34px;
+      background: transparent;
+      border: none;
+      color: var(--text-2);
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+    .qty-btn:hover { color: var(--gold); background: rgba(201,169,110,0.06); }
+    .qty-value {
+      width: 36px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text);
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      line-height: 34px;
+    }
+
+    .cart-item__subtotal {
+      font-family: var(--font-title);
+      font-size: 1.2rem;
+      color: var(--gold);
+      min-width: 80px;
+      text-align: right;
+    }
+
+    .cart-item__remove {
+      background: none;
+      border: none;
+      color: var(--text-3);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s ease;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .cart-item__remove:hover { color: #e06060; }
+
+    /* ── EMPTY STATE ───────────────────────────────── */
+    #cartEmpty {
+      display: none;
+      text-align: center;
+      padding: 80px 0;
+      grid-column: 1 / -1;
+    }
+    #cartEmpty .empty-icon {
+      font-family: var(--font-title);
+      font-size: 4rem;
+      font-style: italic;
+      color: var(--text-3);
+      margin-bottom: 24px;
+      line-height: 1;
+    }
+    #cartEmpty h2 {
+      font-size: 2rem;
+      font-style: italic;
+      margin-bottom: 12px;
+    }
+    #cartEmpty p { color: var(--text-2); font-size: 0.9rem; margin-bottom: 32px; }
+
+    /* ── RÉSUMÉ COMMANDE ───────────────────────────── */
+    .cart-summary {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 36px;
+      position: sticky;
+      top: 100px;
+    }
+    .cart-summary h3 {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      font-size: 0.85rem;
+      color: var(--text-2);
+      border-bottom: 1px solid var(--border);
+    }
+    .total-row:last-child { border-bottom: none; }
+    .total-row em { color: #7dcfa0; font-style: normal; font-size: 0.78rem; }
+    .total-row--final {
+      font-family: var(--font-title);
+      font-size: 1.3rem;
+      color: var(--text);
+      padding-top: 16px;
+      margin-top: 4px;
+    }
+    .total-row--final span:last-child { color: var(--gold); }
+
+    .checkout-btn {
+      display: block;
+      width: 100%;
+      margin-top: 24px;
+      padding: 17px;
+      background: var(--gold);
+      color: #080808;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      text-align: center;
+      text-decoration: none;
+    }
+    .checkout-btn:hover { background: var(--gold-light); }
+
+    .continue-link {
+      display: block;
+      text-align: center;
+      margin-top: 16px;
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      transition: color 0.2s ease;
+    }
+    .continue-link:hover { color: var(--text-2); }
+
+    .summary-note {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-3);
+      line-height: 1.75;
+    }
+
+    @media (max-width: 900px) {
+      .panier-layout { grid-template-columns: 1fr; gap: 40px; }
+      .cart-summary { position: static; }
+    }
+    @media (max-width: 600px) {
+      .cart-item { grid-template-columns: 80px 1fr; grid-template-rows: auto auto; }
+      .cart-item__img { width: 80px; }
+      .cart-item__qty { grid-column: 2; }
+      .cart-item__subtotal { grid-column: 2; text-align: left; }
+      .cart-item__remove { grid-column: 1; grid-row: 1; justify-self: end; margin-top: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__logo">Ombr<em>è</em>ve</a>
+        <div class="nav__links" id="navLinks">
+          <a href="index.html">Accueil</a>
+          <a href="boutique.html">Boutique</a>
+          <a href="contact.html">Contact</a>
+          <a href="panier.html" class="nav__cart active">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            <span class="cart-count">0</span>
+          </a>
+        </div>
+        <button class="nav__hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="nav__mobile" id="mobileMenu">
+        <a href="index.html">Accueil</a>
+        <a href="boutique.html">Boutique</a>
+        <a href="contact.html">Contact</a>
+        <a href="panier.html">Mon panier</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <div class="page-hero container fade-up">
+    <span class="tag">Ma sélection</span>
+    <h1>Mon Panier</h1>
+    <p>Vérifiez votre sélection avant de confirmer votre commande.</p>
+  </div>
+
+  <!-- PANIER -->
+  <section class="section--sm container">
+    <div class="panier-layout">
+
+      <!-- Liste articles -->
+      <div>
+        <!-- État vide -->
+        <div id="cartEmpty">
+          <div class="empty-icon">∅</div>
+          <h2>Votre panier est vide</h2>
+          <p>Vous n'avez pas encore ajouté de pièce à votre sélection.</p>
+          <a href="boutique.html" class="btn btn--outline">Découvrir la boutique</a>
+        </div>
+        <!-- Articles -->
+        <div id="cartItems"></div>
+      </div>
+
+      <!-- Résumé -->
+      <div id="cartSummary" style="display:none">
+        <div class="cart-summary">
+          <h3>Récapitulatif</h3>
+          <div id="cartTotal"></div>
+          <a href="#" class="checkout-btn">Passer commande →</a>
+          <a href="boutique.html" class="continue-link">← Continuer mes achats</a>
+          <div class="summary-note">
+            Livraison offerte dès 200 € d'achat · Retours gratuits sous 14 jours · Paiement 100 % sécurisé
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <a href="index.html" class="footer__logo">Ombr<em>è</em>ve</a>
+          <p>Maison de mode parisienne fondée sur l'art du vêtement discret et d'exception. Séries limitées, matières nobles, silhouettes intemporelles.</p>
+        </div>
+        <div class="footer__col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="boutique.html">Boutique</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Informations</h4>
+          <ul>
+            <li><a href="#">Livraison & retours</a></li>
+            <li><a href="#">Guide des tailles</a></li>
+            <li><a href="#">Entretien des pièces</a></li>
+            <li><a href="#">Mentions légales</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2025 Ombrève. Tous droits réservés.</span>
+        <span>Paris · Maison de mode artisanale</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
