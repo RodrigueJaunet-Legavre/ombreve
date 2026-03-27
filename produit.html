@@ -406,10 +406,7 @@
         <div class="product-divider"></div>
 
         <!-- Taille -->
-        <p class="selector-label">
-          Taille
-          <a href="#">Guide des tailles</a>
-        </p>
+        <p class="selector-label">Taille</p>
         <div class="sizes">
           <button class="size-btn">XS</button>
           <button class="size-btn active">S</button>
@@ -418,18 +415,9 @@
           <button class="size-btn unavailable">XL</button>
         </div>
 
-        <!-- Couleur -->
-        <p class="selector-label">Couleur — <span style="color:var(--text-2);font-size:0.72rem;letter-spacing:0.06em;text-transform:none;font-weight:300">Noir Obsidienne</span></p>
-        <div class="colors">
-          <div class="color-dot active" style="background:#141414" title="Noir Obsidienne"></div>
-          <div class="color-dot" style="background:#3A3530" title="Brun Tourbe"></div>
-          <div class="color-dot" style="background:#2A2E3A" title="Bleu Minuit"></div>
-        </div>
-
         <!-- CTA -->
         <div class="product-cta">
           <button class="btn--add add-to-cart" id="addToCart">Ajouter au panier</button>
-          <button class="btn--wish">♡ &nbsp; Ajouter à ma liste</button>
         </div>
 
         <!-- Réassurance -->
@@ -569,6 +557,33 @@
 
   <script src="script.js"></script>
   <script>
+    // Chargement dynamique depuis les paramètres URL
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const nom = params.get('nom');
+      const prix = params.get('prix');
+      const img = params.get('img');
+      if (nom) {
+        const nameEl = document.querySelector('.product-name');
+        const parts = nom.split(' ');
+        nameEl.innerHTML = parts.length > 1
+          ? parts[0] + '<br>' + parts.slice(1).join(' ')
+          : nom;
+        document.title = nom + ' — Ombrève';
+      }
+      if (prix) {
+        const priceEl = document.querySelector('.product-price');
+        priceEl.innerHTML = prix + ' <span>TTC · Hors livraison</span>';
+      }
+      if (img) {
+        const mainImg = document.getElementById('mainImg');
+        mainImg.src = img;
+        mainImg.alt = nom || mainImg.alt;
+        document.querySelector('.gallery-thumbs').style.display = 'none';
+        document.querySelector('.product-gallery').style.gridTemplateColumns = '1fr';
+      }
+    })();
+
     // Galerie thumbs
     const thumbs = document.querySelectorAll('.gallery-thumb');
     const mainImg = document.getElementById('mainImg');

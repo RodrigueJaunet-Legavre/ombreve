@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Passer commande — Ombrève</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── LAYOUT ─────────────────────────────────────── */
+    .commande-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 60px;
+      align-items: start;
+      padding: 60px 0 120px;
+    }
+
+    /* ── FORMULAIRE ─────────────────────────────────── */
+    .form-section {
+      margin-bottom: 48px;
+    }
+    .form-section__title {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .form-group--full { grid-column: 1 / -1; }
+    label {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    input, select {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 13px 16px;
+      font-size: 0.92rem;
+      font-family: var(--font-body);
+      outline: none;
+      transition: border-color 0.25s ease;
+      width: 100%;
+      box-sizing: border-box;
+      appearance: none;
+    }
+    input:focus, select:focus {
+      border-color: var(--gold-dark);
+    }
+    input::placeholder { color: var(--text-3); font-size: 0.88rem; }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+
+    /* ── RÉSUMÉ ─────────────────────────────────────── */
+    .order-summary {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 36px;
+      position: sticky;
+      top: 100px;
+    }
+    .order-summary h3 {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .summary-items { margin-bottom: 24px; }
+    .summary-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .summary-item:last-child { border-bottom: none; }
+    .summary-item__img {
+      width: 54px;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .summary-item__img img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      filter: brightness(0.9);
+    }
+    .summary-item__name {
+      font-family: var(--font-title);
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--text);
+      flex: 1;
+    }
+    .summary-item__price {
+      font-size: 0.88rem;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+    .summary-totals .total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      font-size: 0.85rem;
+      color: var(--text-2);
+      border-bottom: 1px solid var(--border);
+    }
+    .summary-totals .total-row:last-child { border-bottom: none; }
+    .summary-totals .total-row em { color: #7dcfa0; font-style: normal; font-size: 0.78rem; }
+    .total-row--final {
+      font-family: var(--font-title);
+      font-size: 1.3rem !important;
+      color: var(--text) !important;
+      padding-top: 16px !important;
+      margin-top: 4px;
+    }
+    .total-row--final span:last-child { color: var(--gold); }
+
+    /* ── BOUTON ─────────────────────────────────────── */
+    .confirm-btn {
+      display: block;
+      width: 100%;
+      margin-top: 28px;
+      padding: 17px;
+      background: var(--gold);
+      color: #080808;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      text-align: center;
+    }
+    .confirm-btn:hover { background: var(--gold-light); }
+    .confirm-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: var(--gold);
+    }
+
+    /* ── CONFIRMATION ───────────────────────────────── */
+    #confirmationMsg {
+      display: none;
+      text-align: center;
+      padding: 80px 40px;
+      grid-column: 1 / -1;
+    }
+    #confirmationMsg .confirm-icon {
+      font-size: 3rem;
+      color: var(--gold);
+      margin-bottom: 24px;
+    }
+    #confirmationMsg h2 {
+      font-family: var(--font-title);
+      font-style: italic;
+      font-size: 2.4rem;
+      margin-bottom: 16px;
+    }
+    #confirmationMsg p { color: var(--text-2); font-size: 0.95rem; margin-bottom: 36px; line-height: 1.8; }
+
+    .form-error {
+      font-size: 0.72rem;
+      color: #e06060;
+      margin-top: 4px;
+      display: none;
+    }
+    input.invalid { border-color: #e06060; }
+
+    @media (max-width: 900px) {
+      .commande-layout { grid-template-columns: 1fr; gap: 40px; }
+      .order-summary { position: static; }
+    }
+    @media (max-width: 560px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__logo">Ombr<em>è</em>ve</a>
+        <div class="nav__links" id="navLinks">
+          <a href="index.html">Accueil</a>
+          <a href="boutique.html">Boutique</a>
+          <a href="contact.html">Contact</a>
+          <a href="panier.html" class="nav__cart">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            <span class="cart-count">0</span>
+          </a>
+        </div>
+        <button class="nav__hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="nav__mobile" id="mobileMenu">
+        <a href="index.html">Accueil</a>
+        <a href="boutique.html">Boutique</a>
+        <a href="contact.html">Contact</a>
+        <a href="panier.html">Mon panier</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <div class="page-hero container fade-up">
+    <span class="tag">Finalisation</span>
+    <h1>Passer commande</h1>
+    <p>Renseignez vos informations pour finaliser votre commande.</p>
+  </div>
+
+  <!-- CONTENU -->
+  <section class="section--sm container">
+    <div class="commande-layout" id="commandeLayout">
+
+      <!-- FORMULAIRE -->
+      <form id="orderForm" novalidate>
+
+        <!-- Identité -->
+        <div class="form-section">
+          <p class="form-section__title">Informations personnelles</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="prenom">Prénom *</label>
+              <input type="text" id="prenom" placeholder="Marie" required />
+              <span class="form-error">Champ requis.</span>
+            </div>
+            <div class="form-group">
+              <label for="nom">Nom *</label>
+              <input type="text" id="nom" placeholder="Dupont" required />
+              <span class="form-error">Champ requis.</span>
+            </div>
+            <div class="form-group">
+              <label for="email">E-mail *</label>
+              <input type="email" id="email" placeholder="marie@example.com" required />
+              <span class="form-error">Adresse e-mail invalide.</span>
+            </div>
+            <div class="form-group">
+              <label for="telephone">Téléphone</label>
+              <input type="tel" id="telephone" placeholder="+33 6 00 00 00 00" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Livraison -->
+        <div class="form-section">
+          <p class="form-section__title">Adresse de livraison</p>
+          <div class="form-row">
+            <div class="form-group form-group--full">
+              <label for="adresse">Adresse *</label>
+              <input type="text" id="adresse" placeholder="12 rue de la Paix" required />
+              <span class="form-error">Champ requis.</span>
+            </div>
+            <div class="form-group form-group--full">
+              <label for="complement">Complément d'adresse</label>
+              <input type="text" id="complement" placeholder="Appartement, bâtiment…" />
+            </div>
+            <div class="form-group">
+              <label for="codePostal">Code postal *</label>
+              <input type="text" id="codePostal" placeholder="75001" required />
+              <span class="form-error">Champ requis.</span>
+            </div>
+            <div class="form-group">
+              <label for="ville">Ville *</label>
+              <input type="text" id="ville" placeholder="Paris" required />
+              <span class="form-error">Champ requis.</span>
+            </div>
+            <div class="form-group form-group--full">
+              <label for="pays">Pays *</label>
+              <select id="pays" required>
+                <option value="FR">France</option>
+                <option value="BE">Belgique</option>
+                <option value="CH">Suisse</option>
+                <option value="LU">Luxembourg</option>
+                <option value="MC">Monaco</option>
+                <option value="other">Autre pays</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+
+      </form>
+
+      <!-- RÉSUMÉ COMMANDE -->
+      <div class="order-summary">
+        <h3>Votre commande</h3>
+        <div class="summary-items" id="summaryItems"></div>
+        <div class="summary-totals" id="summaryTotals"></div>
+        <button class="confirm-btn" id="confirmBtn" type="button">Confirmer la commande →</button>
+        <div class="summary-note" style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:0.72rem;color:var(--text-3);line-height:1.75">
+          Paiement 100 % sécurisé · Retours gratuits sous 14 jours
+        </div>
+      </div>
+
+      <!-- CONFIRMATION -->
+      <div id="confirmationMsg">
+        <div class="confirm-icon">✓</div>
+        <h2>Commande confirmée</h2>
+        <p>Merci pour votre commande.<br>Vous recevrez une confirmation par e-mail sous peu.<br>Nos équipes préparent votre colis avec soin.</p>
+        <a href="boutique.html" class="btn btn--outline">Retour à la boutique</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <a href="index.html" class="footer__logo">Ombr<em>è</em>ve</a>
+          <p>Maison de mode parisienne fondée sur l'art du vêtement discret et d'exception.</p>
+        </div>
+        <div class="footer__col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="boutique.html">Boutique</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Informations</h4>
+          <ul>
+            <li><a href="#">Livraison & retours</a></li>
+            <li><a href="#">Entretien des pièces</a></li>
+            <li><a href="#">Mentions légales</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2025 Ombrève. Tous droits réservés.</span>
+        <span>Paris · Maison de mode artisanale</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Afficher le résumé de commande depuis le panier
+    const cart = JSON.parse(localStorage.getItem('ombreveCart') || '[]');
+    const summaryItems = document.getElementById('summaryItems');
+    const summaryTotals = document.getElementById('summaryTotals');
+
+    if (cart.length === 0) {
+      summaryItems.innerHTML = '<p style="color:var(--text-3);font-size:0.88rem">Panier vide.</p>';
+    } else {
+      let total = 0;
+      cart.forEach(item => {
+        const price = parseFloat(item.price);
+        const subtotal = price * (item.qty || 1);
+        total += subtotal;
+        summaryItems.innerHTML += `
+          <div class="summary-item">
+            <div class="summary-item__img"><img src="${item.img || ''}" alt="${item.name}" /></div>
+            <span class="summary-item__name">${item.name}${item.size ? ' · ' + item.size : ''}</span>
+            <span class="summary-item__price">${subtotal.toLocaleString('fr-FR')} €</span>
+          </div>`;
+      });
+      const livraison = total >= 200 ? 'Offerte' : '9,90 €';
+      const livraisonVal = total >= 200 ? 0 : 9.90;
+      summaryTotals.innerHTML = `
+        <div class="total-row"><span>Sous-total</span><span>${total.toLocaleString('fr-FR')} €</span></div>
+        <div class="total-row"><span>Livraison</span><span><em>${livraison}</em></span></div>
+        <div class="total-row total-row--final"><span>Total</span><span>${(total + livraisonVal).toLocaleString('fr-FR')} €</span></div>`;
+    }
+
+    // Validation et soumission
+    document.getElementById('confirmBtn').addEventListener('click', () => {
+      const form = document.getElementById('orderForm');
+      const required = form.querySelectorAll('[required]');
+      let valid = true;
+
+      required.forEach(field => {
+        const err = field.nextElementSibling;
+        field.classList.remove('invalid');
+        if (err) err.style.display = 'none';
+
+        if (!field.value.trim()) {
+          valid = false;
+          field.classList.add('invalid');
+          if (err) err.style.display = 'block';
+        } else if (field.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value)) {
+          valid = false;
+          field.classList.add('invalid');
+          if (err) err.style.display = 'block';
+      });
+
+      if (valid) {
+        localStorage.removeItem('ombreveCart');
+        document.getElementById('commandeLayout').querySelectorAll(':scope > *:not(#confirmationMsg)').forEach(el => el.style.display = 'none');
+        const msg = document.getElementById('confirmationMsg');
+        msg.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  </script>
+</body>
+</html>
